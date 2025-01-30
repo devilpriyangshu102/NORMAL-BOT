@@ -1,0 +1,36 @@
+name: Deploy NORMAL-BOT
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: Set Up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 20
+
+    - name: Install Dependencies
+      run: npm install --legacy-peer-deps --no-audit --no-fund
+
+    - name: Install Concurrently
+      run: npm install concurrently --save
+
+    - name: Install Sharp (if needed)
+      run: npm install sharp --force || echo "Sharp already installed"
+
+    - name: Start the Bot
+      run: |
+        nohup npm start > bot.log 2>&1 &
+        echo "Bot started successfully!"
